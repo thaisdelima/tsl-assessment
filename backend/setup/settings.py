@@ -26,15 +26,19 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False").lower() in ("1", "true", "yes", "on")
+_debug_value = os.getenv("DEBUG")
+if _debug_value is None:
+    raise RuntimeError("DEBUG must be set in .env")
+DEBUG = _debug_value.lower() in ("1", "true", "yes", "on")
 
-_hosts = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
+_hosts = os.getenv("ALLOWED_HOSTS")
+if _hosts is None:
+    raise RuntimeError("ALLOWED_HOSTS must be set in .env")
 ALLOWED_HOSTS = [h.strip() for h in _hosts.split(",") if h.strip()]
 
-_cors_origins = os.getenv(
-    "CORS_ALLOWED_ORIGINS",
-    "http://localhost:5173,http://127.0.0.1:5173",
-)
+_cors_origins = os.getenv("CORS_ALLOWED_ORIGINS")
+if _cors_origins is None:
+    raise RuntimeError("CORS_ALLOWED_ORIGINS must be set in .env")
 CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(",") if o.strip()]
 
 
