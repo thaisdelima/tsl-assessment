@@ -1,0 +1,8 @@
+Hello {{ user.username }},
+
+Welcome to the Wall! We are excited to have you here.
+To start posting on the wall, please confirm your email address by clicking the link below:
+
+{{ activate_url }}
+
+Enjoy the site!
