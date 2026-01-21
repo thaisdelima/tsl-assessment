@@ -1,8 +1,9 @@
+import { describe, it, expect, beforeEach, afterEach, vi, type MockInstance } from 'vitest'
 import { currentUser, createMessage, listMessages, login, register } from './api'
 
 describe('api client', () => {
   const apiBase = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000'
-  let fetchMock: vi.Mock
+  let fetchMock: MockInstance
 
   beforeEach(() => {
     fetchMock = vi.fn()
