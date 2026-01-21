@@ -28,6 +28,7 @@ Quick guide to run the backend (Django), the frontend (React/Vite), and the full
    python manage.py runserver 0.0.0.0:8000
    ```
 4) API available at `http://127.0.0.1:8000`.
+5) Emails are logged to the console during sending; check the logs to confirm the email was sent.
 
 ## Frontend (React/Vite) locally
 1) Go to `frontend/tsl-assessment` and install dependencies:
@@ -52,7 +53,7 @@ Quick guide to run the backend (Django), the frontend (React/Vite), and the full
    ```
 2) Services:
    - Backend: `http://localhost:8000`
-   - Frontend (Vite dev): `http://localhost:5173`
+   - Frontend : `http://localhost`
 3) Backend runs migrations automatically on startup (compose entrypoint).
 4) Env vars are set in `docker-compose.yml` (adjust if changing host/port):
    - Backend: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`
