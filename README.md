@@ -50,6 +50,11 @@ Quick guide to run the backend (Django), the frontend (React/Vite), and the full
 1) Create a `.env` in the repo root (Compose uses it for variable substitution):
    ```bash
    SECRET_KEY=<set-a-secret-value>
+   POSTGRES_DB=tsl
+   POSTGRES_USER=tsl
+   POSTGRES_PASSWORD=tslpassword
+   POSTGRES_HOST=db
+   POSTGRES_PORT=5432
    # Optional email/SMTP (SendGrid-style) if you move off console email:
    SENDGRID_API_KEY=<key>
    EMAIL_HOST_USER=apikey
@@ -59,6 +64,7 @@ Quick guide to run the backend (Django), the frontend (React/Vite), and the full
    ```
 2) Build and start (run migrations once before the first `up` or after model changes):
    ```bash
+   docker compose up -d db
    docker compose run --rm backend python manage.py migrate
    docker compose up --build
    ```
@@ -67,6 +73,7 @@ Quick guide to run the backend (Django), the frontend (React/Vite), and the full
    - Frontend : `http://localhost`
 4) Notes:
    - Compose does not run migrations automatically.
+   - PostgreSQL data is persisted in the `db` volume.
    - Backend `DEBUG` is forced off in `docker-compose.yml` (`DEBUG=0`).
    - Frontend build arg `VITE_API_URL` defaults to `http://localhost:8000` (override in `docker-compose.yml` if needed).
 

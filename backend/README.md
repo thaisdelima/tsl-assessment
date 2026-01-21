@@ -37,12 +37,18 @@ SECRET_KEY=dev-secret-key
 DEBUG=1
 ALLOWED_HOSTS=localhost,127.0.0.1
 CORS_ALLOWED_ORIGINS=http://localhost:5173
-# Optional
+# Optional email/SMTP (if you stop using the console email backend)
 SENDGRID_API_KEY=<key>
 EMAIL_HOST_USER=apikey
 EMAIL_HOST_PASSWORD=<key>
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
+# PostgreSQL 
+POSTGRES_DB=tsl
+POSTGRES_USER=tsl
+POSTGRES_PASSWORD=tslpassword
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
 ```
 
 4) Install the dependencies:
