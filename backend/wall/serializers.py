@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import Message
+from django.contrib.auth.models import User
 
 class MessageSerializer(serializers.ModelSerializer):
-    # Show the username instead of the numeric ID
     user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Message
-        fields = ['id', 'user', 'content', 'created_at']
+        fields = ['id', 'user', 'content', 'created_at']    

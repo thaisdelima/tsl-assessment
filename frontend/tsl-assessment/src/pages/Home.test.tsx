@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Home from './Home'
 import { useAuth } from '../context/AuthContext'
 import { listMessages, createMessage } from '../lib/api'
@@ -17,6 +18,20 @@ const mockedUseAuth = vi.mocked(useAuth)
 const mockedListMessages = vi.mocked(listMessages)
 const mockedCreateMessage = vi.mocked(createMessage)
 
+const renderWithClient = () => {
+  const client = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  })
+  return render(
+    <QueryClientProvider client={client}>
+      <Home />
+    </QueryClientProvider>,
+  )
+}
+
 describe('Home', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -29,18 +44,18 @@ describe('Home', () => {
       { id: 1, user: 'Ana', content: 'Olá', created_at: '2024-01-01T00:00:00Z' },
     ])
 
-    render(<Home />)
+    renderWithClient()
 
-    expect(screen.getByText(/carregando posts/i)).toBeInTheDocument()
-    await waitFor(() => expect(screen.queryByText(/carregando posts/i)).not.toBeInTheDocument())
+    expect(screen.getByText(/loading posts/i)).toBeInTheDocument()
+    await waitFor(() => expect(screen.queryByText(/loading posts/i)).not.toBeInTheDocument())
     expect(screen.getByText('Olá')).toBeInTheDocument()
-    expect(screen.getByText('Ana')).toBeInTheDocument()
+    expect(screen.getByText(/Ana/)).toBeInTheDocument()
   })
 
   it('mostra erro ao falhar carregamento', async () => {
     mockedListMessages.mockRejectedValue(new Error('falhou'))
 
-    render(<Home />)
+    renderWithClient()
 
     await waitFor(() => expect(screen.getByText('falhou')).toBeInTheDocument())
   })
@@ -48,7 +63,7 @@ describe('Home', () => {
   it('mostra mensagem quando não há posts', async () => {
     mockedListMessages.mockResolvedValue([])
 
-    render(<Home />)
+    renderWithClient()
 
     await waitFor(() => expect(screen.getByText(/no posts found/i)).toBeInTheDocument())
   })
@@ -58,12 +73,14 @@ describe('Home', () => {
     mockedListMessages.mockResolvedValue([])
     const user = userEvent.setup()
 
-    render(<Home />)
+    renderWithClient()
 
     await user.type(screen.getByLabelText(/new post/i), 'sem token')
     await user.click(screen.getByRole('button', { name: /post/i }))
 
-    expect(screen.getByText('Você precisa estar autenticado para postar.')).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.getByText('You need to be authenticated to post.')).toBeInTheDocument(),
+    )
     expect(mockedCreateMessage).not.toHaveBeenCalled()
   })
 
@@ -72,12 +89,12 @@ describe('Home', () => {
     mockedListMessages.mockResolvedValue([])
     const user = userEvent.setup()
 
-    render(<Home />)
+    renderWithClient()
 
     await user.type(screen.getByLabelText(/new post/i), '   ')
     await user.click(screen.getByRole('button', { name: /post/i }))
 
-    expect(screen.getByText('Digite uma mensagem para postar.')).toBeInTheDocument()
+    expect(screen.getByText('Enter a message to post.')).toBeInTheDocument()
     expect(mockedCreateMessage).not.toHaveBeenCalled()
   })
 
@@ -92,7 +109,7 @@ describe('Home', () => {
     })
     const user = userEvent.setup()
 
-    render(<Home />)
+    renderWithClient()
 
     await user.type(screen.getByLabelText(/new post/i), 'Novo post')
     await user.click(screen.getByRole('button', { name: /post/i }))

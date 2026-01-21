@@ -9,8 +9,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
     """Envia e-mail de boas-vindas quando um usuário é criado."""
     if created:
         subject = 'Welcome to the Wall!'
-        message = f'Hello {instance.username}, your account has been created successfully!'
-        from_email = 'admin@wall.com'
+        message = f'Hello {instance.username}, your account has been created successfully! Welcome to the Wall!'
         recipient_list = [instance.email]
 
-        send_mail(subject, message, from_email, recipient_list)
+        send_mail(subject, message, None, recipient_list)

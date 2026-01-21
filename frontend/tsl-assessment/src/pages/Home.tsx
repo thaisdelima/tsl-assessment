@@ -1,4 +1,5 @@
-import { useEffect, useState, type FC } from 'react'
+import { useState, type FC } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import WallPost from '../components/WallPost'
 import CreatePostForm from '../components/CreatePostForm'
 import { listMessages, createMessage } from '../lib/api'
@@ -12,64 +13,57 @@ type Post = {
 }
 
 const Home: FC = () => {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loadingPosts, setLoadingPosts] = useState(true)
-  const [postsError, setPostsError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+  const { data: postsData, isLoading: loadingPosts, error: postsError } = useQuery<Post[], Error>({
+    queryKey: ['posts'],
+    queryFn: listMessages,
+  })
   const [newMessage, setNewMessage] = useState('')
-  const [posting, setPosting] = useState(false)
   const [postError, setPostError] = useState<string | null>(null)
   const { user, token } = useAuth()
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const data = await listMessages()
-        setPosts(data as Post[])
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erro desconhecido'
-        setPostsError(message)
-      } finally {
-        setLoadingPosts(false)
+  const createPostMutation = useMutation<Post, Error, string>({
+    mutationFn: (content: string) => {
+      if (!token) {
+        throw new Error('You need to be authenticated to post.')
       }
-    }
-
-    loadPosts()
-  }, [])
+      return createMessage(content, token)
+    },
+    onSuccess: (created) => {
+      queryClient.setQueryData<Post[]>(['posts'], (prev) => (prev ? [created, ...prev] : [created]))
+    },
+  })
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!token) {
-      setPostError('Você precisa estar autenticado para postar.')
-      return
-    }
     if (!newMessage.trim()) {
-      setPostError('Digite uma mensagem para postar.')
+      setPostError('Enter a message to post.')
       return
     }
-    setPosting(true)
     setPostError(null)
     try {
-      const created = await createMessage(newMessage, token)
-      setPosts((prev) => [created as Post, ...prev])
+      await createPostMutation.mutateAsync(newMessage)
       setNewMessage('')
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro ao publicar'
-      setPostError(message)
-    } finally {
-      setPosting(false)
+    } catch {
+      // Error handled via mutation state
     }
   }
 
+  const posts = postsData ?? []
+  const postsErrorMessage = postsError?.message ?? null
+  const mutationError = createPostMutation.error?.message ?? null
+  const displayPostError = postError ?? mutationError
+
   return (
     <main className="mx-auto flex max-w-3xl flex-col  gap-4 p-4">
-      <h1 className="text-2xl font-bold text-gray-900">Mural</h1>
+      <h1 className="text-2xl font-bold text-gray-900">Wall</h1>
       <div className="w-full flex max-w-3xl flex-col items-center justify-center gap-4 p-4">
 
       {user ? (
         <CreatePostForm
           newMessage={newMessage}
-          posting={posting}
-          postError={postError}
+          posting={createPostMutation.isPending}
+          postError={displayPostError}
           onSubmit={handleCreatePost}
           onChangeMessage={setNewMessage}
         />
@@ -79,11 +73,11 @@ const Home: FC = () => {
         </div>
       )}
 
-      {loadingPosts && <p className="text-gray-600">Carregando posts...</p>}
+      {loadingPosts && <p className="text-gray-600">Loading posts...</p>}
 
-      {postsError && (
+      {postsErrorMessage && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
-          {postsError}
+          {postsErrorMessage}
         </div>
       )}
 

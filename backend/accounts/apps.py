@@ -6,6 +6,6 @@ class AccountsConfig(AppConfig):
     name = 'accounts'
 
     def ready(self):
-        # Conecta sinais de criação de usuário.
+        # Connects user creation signals.
         from . import signals  # noqa: F401
 

@@ -23,7 +23,7 @@ load_dotenv(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 _debug_value = os.getenv("DEBUG")
@@ -71,7 +71,7 @@ ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*"]
 
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -159,5 +159,14 @@ REST_FRAMEWORK = {
         #'rest_framework.authentication.SessionAuthentication',
     ],
 }
-
+# Console email backend for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# SendGrid email configuration
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

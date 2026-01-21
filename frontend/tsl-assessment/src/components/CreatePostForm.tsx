@@ -17,7 +17,7 @@ const CreatePostForm: FC<CreatePostFormProps> = ({
 }) => (
   <form
     onSubmit={onSubmit}
-    className="w-full max-w-xl space-y-2 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+    className="w-full max-w-xl space-y-2 rounded-lg border border-blue-200 bg-white p-4 shadow-sm"
   >
     <label className="block text-sm font-semibold text-gray-800" htmlFor="new-post">
       New post
@@ -26,7 +26,7 @@ const CreatePostForm: FC<CreatePostFormProps> = ({
       id="new-post"
       value={newMessage}
       onChange={(e) => onChangeMessage(e.target.value)}
-      className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm  text-black shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      className="w-full rounded-md border border-blue-200 px-3 py-2 text-sm  text-black shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
       rows={3}
       placeholder="Share something..."
     />

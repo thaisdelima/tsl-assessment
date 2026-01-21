@@ -22,6 +22,28 @@ type AuthResponse = {
   key: string
 }
 
+const formatErrorPayload = (payload: unknown): string | null => {
+  if (!payload) return null
+  if (typeof payload === 'string') return payload
+  if (Array.isArray(payload)) {
+    const joined = payload
+      .map((item) => formatErrorPayload(item))
+      .filter(Boolean)
+      .join(' | ')
+    return joined || null
+  }
+  if (typeof payload === 'object') {
+    const parts = Object.entries(payload as Record<string, unknown>)
+      .map(([key, value]) => {
+        const formatted = formatErrorPayload(value)
+        return formatted ? `${key}: ${formatted}` : key
+      })
+      .filter(Boolean)
+    return parts.length ? parts.join(' | ') : null
+  }
+  return String(payload)
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -34,13 +56,22 @@ async function request<T>(
   }
 
   if (token) {
-    headers.Authorization = `Token ${token}`
+    (headers as Record<string, string>).Authorization = `Token ${token}`
   }
 
   const res = await fetch(url, { ...options, headers })
   if (!res.ok) {
-    const text = await res.text()
-    throw new Error(text || 'Erro na requisição')
+    const bodyText = await res.text()
+    let message: string | null = null
+    if (bodyText) {
+      try {
+        const parsed = JSON.parse(bodyText)
+        message = formatErrorPayload(parsed)
+      } catch {
+        message = bodyText
+      }
+    }
+    throw new Error(message || 'Error on request')
   }
   return res.json() as Promise<T>
 }

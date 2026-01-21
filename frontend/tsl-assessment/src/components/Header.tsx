@@ -63,18 +63,18 @@ const Header = () => {
   }
 
   return (
-    <header className="border-b border-gray-200 bg-gray-100">
+    <header className="border-b border-blue-200 bg-blue-100">
       <div className="relative mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
         <span className="text-xl font-bold text-gray-900">Wall App</span>
 
         {user ? (
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-700">Hello {user.username}</span>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-700">Hello, {user.username}</span>
             <button
               type="button"
               onClick={handleLogout}
               disabled={loading}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-70"
+              className="rounded-lg border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {loading ? 'Logout...' : 'Logout'}
             </button>
@@ -84,12 +84,12 @@ const Header = () => {
             <button
               type="button"
               onClick={togglePanel}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="rounded-lg border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Login or create account
             </button>
             {open && (
-              <div className="absolute right-0 mt-2 w-80 rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
+              <div className="absolute right-0 mt-2 w-80 rounded-lg border border-blue-200 bg-white p-4 shadow-lg">
                 <div className="mb-3 flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-gray-900">
                     {mode === 'login' ? 'Login' : 'Register'}

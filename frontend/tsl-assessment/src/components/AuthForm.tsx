@@ -125,7 +125,7 @@ export default function AuthForm(props: Props) {
             onClick={props.onSwitchMode}
             className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
           >
-            {isLogin ? 'Criar conta' : 'Já tenho conta'}
+            {isLogin ? 'Create account' : 'Already have an account'}
           </button>
         )}
       </div>

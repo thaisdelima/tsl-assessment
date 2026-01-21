@@ -2,7 +2,6 @@ import { act, render, waitFor } from '@testing-library/react'
 import { AuthProvider, useAuth } from './AuthContext'
 import {
   login as apiLogin,
-  register as apiRegister,
   currentUser,
   logout as apiLogout,
 } from '../lib/api'
