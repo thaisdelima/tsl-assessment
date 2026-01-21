@@ -47,17 +47,28 @@ Quick guide to run the backend (Django), the frontend (React/Vite), and the full
 4) Open `http://localhost:5173`.
 
 ## Full stack with Docker Compose
-1) From the repo root, build and run everything:
+1) Create a `.env` in the repo root (Compose uses it for variable substitution):
    ```bash
+   SECRET_KEY=<set-a-secret-value>
+   # Optional email/SMTP (SendGrid-style) if you move off console email:
+   SENDGRID_API_KEY=<key>
+   EMAIL_HOST_USER=apikey
+   EMAIL_HOST_PASSWORD=<key>
+   EMAIL_PORT=587
+   EMAIL_USE_TLS=True
+   ```
+2) Build and start (run migrations once before the first `up` or after model changes):
+   ```bash
+   docker compose run --rm backend python manage.py migrate
    docker compose up --build
    ```
-2) Services:
+3) Services:
    - Backend: `http://localhost:8000`
    - Frontend : `http://localhost`
-3) Backend runs migrations automatically on startup (compose entrypoint).
-4) Env vars are set in `docker-compose.yml` (adjust if changing host/port):
-   - Backend: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`
-   - Frontend: `VITE_API_URL` pointing to the backend (`http://localhost:8000`)
+4) Notes:
+   - Compose does not run migrations automatically.
+   - Backend `DEBUG` is forced off in `docker-compose.yml` (`DEBUG=0`).
+   - Frontend build arg `VITE_API_URL` defaults to `http://localhost:8000` (override in `docker-compose.yml` if needed).
 
 ## Tests
 - Backend: `python manage.py test` (with venv activated).

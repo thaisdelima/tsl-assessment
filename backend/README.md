@@ -31,13 +31,21 @@ source venv/Scripts/activate
 source venv/bin/activate
 ```
 
-3) Copie o arquivo de ambiente e ajuste os valores:
+3) Create `.env` (mandatory) and config the basics envs:
 ```bash
-cp env.example .env
-# Edite .env e defina SECRET_KEY, DEBUG, ALLOWED_HOSTS
+SECRET_KEY=dev-secret-key
+DEBUG=1
+ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+# Optional
+SENDGRID_API_KEY=<key>
+EMAIL_HOST_USER=apikey
+EMAIL_HOST_PASSWORD=<key>
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
 ```
 
-4) Instale as dependências:
+4) Install the dependencies:
 ```bash
 pip install -r requirements.txt
 ```
